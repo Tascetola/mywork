@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celestial Church Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .sidebar.collapsed {
+            width: 70px;
+        }
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+        }
+        .content {
+            transition: all 0.3s ease;
+        }
+        .content.expanded {
+            margin-left: 70px;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            height: 300px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                z-index: 100;
+                left: -250px;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .content {
+                margin-left: 0 !important;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white text-dark shadow-lg w-64 fixed h-full flex flex-col">
+            <div class="p-4 flex items-center border-b border-gray-200">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                    <i class="fas fa-church text-xl"></i>
+                </div>
+                <span class="logo-text ml-3 text-xl font-semibold">Celestial Church</span>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-4">
+                <div class="px-4 mb-6">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <div class="space-y-1">
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-primary bg-primary bg-opacity-10 border-r-4 border-primary">
+                        <i class="fas fa-tachometer-alt text-lg"></i>
+                        <span class="nav-text ml-3 font-medium">Dashboard</span>
+                    </a>
+                    
+                    <div class="px-4 pt-4 pb-2">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Management</span>
+                    </div>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-users text-lg"></i>
+                        <span class="nav-text ml-3">Members</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-calendar-alt text-lg"></i>
+                        <span class="nav-text ml-3">Events</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-hand-holding-heart text-lg"></i>
+                        <span class="nav-text ml-3">Volunteers</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-child text-lg"></i>
+                        <span class="nav-text ml-3">Children</span>
+                    </a>
+                    
+                    <div class="px-4 pt-4 pb-2">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Communication</span>
+                    </div>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-bullhorn text-lg"></i>
+                        <span class="nav-text ml-3">Announcements</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-praying-hands text-lg"></i>
+                        <span class="nav-text ml-3">Prayer Requests</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-comments text-lg"></i>
+                        <span class="nav-text ml-3">Groups</span>
+                    </a>
+                    
+                    <div class="px-4 pt-4 pb-2">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Financial</span>
+                    </div>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-donate text-lg"></i>
+                        <span class="nav-text ml-3">Donations</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-receipt text-lg"></i>
+                        <span class="nav-text ml-3">Expenses</span>
+                    </a>
+                    
+                    <a href="#" class="nav-item flex items-center px-4 py-3 text-dark hover:bg-gray-100">
+                        <i class="fas fa-chart-line text-lg"></i>
+                        <span class="nav-text ml-3">Reports</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                        <i class="fas fa-user text-dark"></i>
+                    </div>
+                    <div class="ml-3">
+                        <span class="block font-medium">Pastor John</span>
+                        <span class="block text-xs text-gray-500">Administrator</span>
+                    </div>
+                    <button class="ml-auto text-gray-500 hover:text-dark">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content flex-1 flex flex-col ml-64">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
+                <div class="flex items-center">
+                    <button id="toggleSidebar" class="text-gray-500 hover:text-dark mr-4 hidden md:block">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <button id="mobileMenuBtn" class="text-gray-500 hover:text-dark mr-4 md:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="text-xl font-semibold text-dark">Dashboard</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-dark relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center">3</span>
+                    </button>
+                    <button class="text-gray-500 hover:text-dark">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </button>
+                    <button class="text-gray-500 hover:text-dark">
+                        <i class="fas fa-question-circle text-xl"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="dashboard-card bg-white rounded-xl shadow-md p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Total Members</p>
+                                <h3 class="text-2xl font-bold mt-1">1,245</h3>
+                                <p class="text-green-500 text-sm mt-2 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 12% from last month
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card bg-white rounded-xl shadow-md p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Weekly Attendance</p>
+                                <h3 class="text-2xl font-bold mt-1">876</h3>
+                                <p class="text-green-500 text-sm mt-2 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 8% from last week
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-secondary bg-opacity-10 flex items-center justify-center text-secondary">
+                                <i class="fas fa-user-check text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card bg-white rounded-xl shadow-md p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Monthly Giving</p>
+                                <h3 class="text-2xl font-bold mt-1">$24,567</h3>
+                                <p class="text-red-500 text-sm mt-2 flex items-center">
+                                    <i class="fas fa-arrow-down mr-1"></i> 5% from last month
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-accent bg-opacity-10 flex items-center justify-center text-accent">
+                                <i class="fas fa-donate text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card bg-white rounded-xl shadow-md p-6 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">Active Volunteers</p>
+                                <h3 class="text-2xl font-bold mt-1">187</h3>
+                                <p class="text-green-500 text-sm mt-2 flex items-center">
+                                    <i class="fas fa-arrow-up mr-1"></i> 15% from last quarter
+                                </p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-purple-500 bg-opacity-10 flex items-center justify-center text-purple-500">
+                                <i class="fas fa-hands-helping text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Attendance Trend</h2>
+                            <select class="text-sm border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option>Last 6 Months</option>
+                                <option>Last Year</option>
+                                <option>Last 2 Years</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Giving Breakdown</h2>
+                            <select class="text-sm border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                                <option>This Year</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="givingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity and Upcoming Events -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Recent Members</h2>
+                            <a href="#" class="text-sm text-primary hover:underline">View All</a>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <i class="fas fa-user text-dark"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Michael Johnson</div>
+                                                    <div class="text-sm text-gray-500">michael@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 15, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-secondary hover:text-green-700">Message</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <i class="fas fa-user text-dark"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Sarah Williams</div>
+                                                    <div class="text-sm text-gray-500">sarah@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 10, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">New</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-secondary hover:text-green-700">Message</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <i class="fas fa-user text-dark"></i>
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">Robert Chen</div>
+                                                    <div class="text-sm text-gray-500">robert@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">May 5, 2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-primary hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-secondary hover:text-green-700">Message</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Upcoming Events</h2>
+                            <a href="#" class="text-sm text-primary hover:underline">View All</a>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-primary pl-4 py-2">
+                                <div class="text-sm font-medium">Sunday Service</div>
+                                <div class="text-xs text-gray-500 flex items-center mt-1">
+                                    <i class="far fa-calendar-alt mr-1"></i> Sun, May 21, 2023
+                                </div>
+                                <div class="text-xs text-gray-500 flex items-center">
+                                    <i class="far fa-clock mr-1"></i> 9:00 AM - 11:00 AM
+                                </div>
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        Worship
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="border-l-4 border-secondary pl-4 py-2">
+                                <div class="text-sm font-medium">Bible Study Group</div>
+                                <div class="text-xs text-gray-500 flex items-center mt-1">
+                                    <i class="far fa-calendar-alt mr-1"></i> Wed, May 24, 2023
+                                </div>
+                                <div class="text-xs text-gray-500 flex items-center">
+                                    <i class="far fa-clock mr-1"></i> 7:00 PM - 8:30 PM
+                                </div>
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Discipleship
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="border-l-4 border-accent pl-4 py-2">
+                                <div class="text-sm font-medium">Youth Camp</div>
+                                <div class="text-xs text-gray-500 flex items-center mt-1">
+                                    <i class="far fa-calendar-alt mr-1"></i> Fri, May 26 - Sun, May 28, 2023
+                                </div>
+                                <div class="text-xs text-gray-500 flex items-center">
+                                    <i class="far fa-clock mr-1"></i> All Day
+                                </div>
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Youth
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="border-l-4 border-purple-500 pl-4 py-2">
+                                <div class="text-sm font-medium">Volunteer Training</div>
+                                <div class="text-xs text-gray-500 flex items-center mt-1">
+                                    <i class="far fa-calendar-alt mr-1"></i> Sat, May 27, 2023
+                                </div>
+                                <div class="text-xs text-gray-500 flex items-center">
+                                    <i class="far fa-clock mr-1"></i> 10:00 AM - 12:00 PM
+                                </div>
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        Training
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prayer Requests -->
+                <div class="mt-6 bg-white rounded-xl shadow-md p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold">Recent Prayer Requests</h2>
+                        <a href="#" class="text-sm text-primary hover:underline">View All</a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                    <i class="fas fa-pray text-dark"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-sm font-medium">James Wilson</div>
+                                    <div class="text-sm text-gray-500 mt-1">Please pray for my mother who is recovering from surgery. She's having a hard time with pain management.</div>
+                                    <div class="mt-2 flex items-center text-xs text-gray-500">
+                                        <span class="mr-3">2 days ago</span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-heart text-red-400 mr-1"></i> 12
+                                        </span>
+                                        <span class="ml-3 flex items-center">
+                                            <i class="fas fa-comment text-gray-400 mr-1"></i> 3
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                    <i class="fas fa-pray text-dark"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-sm font-medium">Lisa Thompson</div>
+                                    <div class="text-sm text-gray-500 mt-1">Pray for my husband who lost his job last week. We're trusting God for provision and direction during this season.</div>
+                                    <div class="mt-2 flex items-center text-xs text-gray-500">
+                                        <span class="mr-3">4 days ago</span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-heart text-red-400 mr-1"></i> 18
+                                        </span>
+                                        <span class="ml-3 flex items-center">
+                                            <i class="fas fa-comment text-gray-400 mr-1"></i> 7
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Toggle sidebar
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('.sidebar');
+        const content = document.querySelector('.content');
+        
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('expanded');
+            });
+        }
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+        
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attendance Chart
+            const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+            const attendanceChart = new Chart(attendanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Sunday Service',
+                        data: [650, 690, 720, 750, 780, 820],
+                        borderColor: '#4F46E5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.05)',
+                        tension: 0.3,
+                        fill: true
+                    }, {
+                        label: 'Midweek Service',
+                        data: [320, 350, 380, 400, 420, 450],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 300
+                        }
+                    }
+                }
+            });
+            
+            // Giving Chart
+            const givingCtx = document.getElementById('givingChart').getContext('2d');
+            const givingChart = new Chart(givingCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tithes', 'Offerings', 'Missions', 'Building Fund', 'Special'],
+                    datasets: [{
+                        data: [12000, 6500, 3000, 2000, 1067],
+                        backgroundColor: [
+                            '#4F46E5',
+                            '#10B981',
+                            '#F59E0B',
+                            '#6366F1',
+                            '#EC4899'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
